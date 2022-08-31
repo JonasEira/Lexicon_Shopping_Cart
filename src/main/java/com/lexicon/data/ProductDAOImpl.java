@@ -4,6 +4,7 @@ import com.lexicon.model.Product;
 import com.lexicon.utilities.MyCredentials;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class ProductDAOImpl implements ProductDAO{
     public Optional<Product> findById(int id) {
         try {
             Product p = new Product();
-            System.out.println("Save called: " + m);
+            System.out.println("findById called: " + m);
             sqlConn = DriverManager.getConnection(m.getUrl(),m.getName(),m.getPassword());
             PreparedStatement statement = sqlConn.prepareStatement(
                     "SELECT * FROM shopping_practice.product WHERE ID = ?"
@@ -60,7 +61,28 @@ public class ProductDAOImpl implements ProductDAO{
 
     @Override
     public List<Product> findAll() {
-        return null;
+        try {
+            List<Product> results = new ArrayList<>();
+            System.out.println("findAll called: " + m);
+            sqlConn = DriverManager.getConnection(m.getUrl(),m.getName(),m.getPassword());
+            PreparedStatement statement = sqlConn.prepareStatement(
+                    "SELECT * FROM shopping_practice.product"
+            );
+            System.out.println(statement);
+            ResultSet result = statement.executeQuery();
+            while(result.next()){
+                results.add(new Product(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getDouble("price")
+                ));
+            }
+            sqlConn.close();
+            return results;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
