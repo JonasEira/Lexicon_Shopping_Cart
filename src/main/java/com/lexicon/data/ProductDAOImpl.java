@@ -86,8 +86,29 @@ public class ProductDAOImpl implements ProductDAO{
     }
 
     @Override
-    public List<Product> findByName(String name) {
-        return null;
+    public List<Product> findByName(String nameValue) {
+        try {
+            System.out.println("findByName called: " + m);
+            List<Product> resultat = new ArrayList<>();
+            sqlConn = DriverManager.getConnection(m.getUrl(), m.getName(), m.getPassword());
+            PreparedStatement statement = sqlConn.prepareStatement(
+                    "SELECT * FROM shopping_practice.product WHERE name LIKE ?");
+            statement.setString(1, nameValue + "%");
+            ResultSet result = statement.executeQuery();
+            System.out.println(statement + ":" + result.getMetaData().getColumnCount());
+            while(result.next()){
+                resultat.add(new Product(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getDouble("price")
+                ));
+            }
+            sqlConn.close();
+            return resultat;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override

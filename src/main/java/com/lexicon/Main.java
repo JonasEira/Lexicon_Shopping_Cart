@@ -21,6 +21,10 @@ public class Main {
             System.out.println(product);
         }
 
-
+        List<Product> searched = pDao.findByName("Test1");
+        System.out.println(searched.size());
+        for(Product product : searched){
+            System.out.println(product);
+        }
     }
 }
