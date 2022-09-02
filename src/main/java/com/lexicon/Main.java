@@ -26,5 +26,10 @@ public class Main {
         for(Product product : searched){
             System.out.println(product);
         }
+        List<Product> searchedPrice = pDao.findByPriceBetween(0, 10000);
+        System.out.println(searched.size());
+        for(Product product : searchedPrice){
+            System.out.println(product);
+        }
     }
 }

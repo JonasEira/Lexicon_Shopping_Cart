@@ -113,8 +113,28 @@ public class ProductDAOImpl implements ProductDAO{
 
     @Override
     public List<Product> findByPriceBetween(int low, int high) {
-        return null;
-    }
+        try {
+            System.out.println("findByPriceBetween called: " + m);
+            List<Product> resultat = new ArrayList<>();
+            sqlConn = DriverManager.getConnection(m.getUrl(), m.getName(), m.getPassword());
+            PreparedStatement statement = sqlConn.prepareStatement(
+                    "SELECT * FROM shopping_practice.product WHERE price BETWEEN ? AND ?");
+            statement.setInt(1, low);
+            statement.setInt(2, high);
+            ResultSet result = statement.executeQuery();
+            System.out.println(statement + ":" + result.getMetaData().getColumnCount());
+            while(result.next()){
+                resultat.add(new Product(
+                        result.getInt("id"),
+                        result.getString("name"),
+                        result.getDouble("price")
+                ));
+            }
+            sqlConn.close();
+            return resultat;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }}
 
     @Override
     public void delete(int id) {
